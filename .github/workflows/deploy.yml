@@ -1,0 +1,56 @@
+name: Build and deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          # Repository variable, e.g. https://api.edupulse.in
+          NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: out/
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: site
+          path: out
+      - name: Upload to the server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: out/*
+          target: /var/www/edupulse-school-web/releases/${{ github.sha }}
+          strip_components: 1
+      - name: Switch to the new release
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            cd /var/www/edupulse-school-web
+            ln -sfn releases/${{ github.sha }} current
+            ls -1dt releases/* | tail -n +6 | xargs -r rm -rf
