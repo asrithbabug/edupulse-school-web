@@ -44,6 +44,9 @@ export default function NonTeachingStaffPage() {
     if (!formData.role)        errs.role  = 'Role is required';
     if (!formData.aadhaar)     errs.aadhaar = 'Aadhaar is required';
     else if (!/^\d{12}$/.test(formData.aadhaar)) errs.aadhaar = 'Aadhaar must contain 12 digits';
+    if (!formData.qualification.trim()) errs.qualification = 'Qualification is required';
+    if (formData.experience === '') errs.experience = 'Experience is required';
+    if (!formData.joiningDate) errs.joiningDate = 'Joining date is required';
     if (!formData.phone.trim()) errs.phone = 'Phone is required';
     else if (!/^\d{10,15}$/.test(formData.phone.replace(/[+\-\s]/g, ''))) errs.phone = 'Invalid phone number';
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errs.email = 'Invalid email';
@@ -132,19 +135,22 @@ export default function NonTeachingStaffPage() {
           <SectionTitle title="2. Professional Details" />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="text-sm font-medium text-text-secondary mb-1 block">Qualification</label>
+              <label className="text-sm font-medium text-text-secondary mb-1 block">Qualification *</label>
               <input type="text" value={formData.qualification} onChange={e => handleChange('qualification', e.target.value)}
-                className="input-field" placeholder="e.g. B.Com, 12th Pass" />
+                className={`input-field ${errors.qualification ? 'border-red-400' : ''}`} placeholder="e.g. B.Com, 12th Pass" />
+              {errors.qualification && <p className="text-xs text-red-500 mt-1">{errors.qualification}</p>}
             </div>
             <div>
-              <label className="text-sm font-medium text-text-secondary mb-1 block">Experience (years)</label>
+              <label className="text-sm font-medium text-text-secondary mb-1 block">Experience (years) *</label>
               <input type="number" value={formData.experience} onChange={e => handleChange('experience', e.target.value)}
-                className="input-field" placeholder="e.g. 3" min="0" max="50" />
+                className={`input-field ${errors.experience ? 'border-red-400' : ''}`} placeholder="e.g. 3" min="0" max="50" />
+              {errors.experience && <p className="text-xs text-red-500 mt-1">{errors.experience}</p>}
             </div>
             <div>
-              <label className="text-sm font-medium text-text-secondary mb-1 block">Joining Date</label>
+              <label className="text-sm font-medium text-text-secondary mb-1 block">Joining Date *</label>
               <input type="date" value={formData.joiningDate} onChange={e => handleChange('joiningDate', e.target.value)}
-                className="input-field" />
+                className={`input-field ${errors.joiningDate ? 'border-red-400' : ''}`} />
+              {errors.joiningDate && <p className="text-xs text-red-500 mt-1">{errors.joiningDate}</p>}
             </div>
           </div>
         </div>
