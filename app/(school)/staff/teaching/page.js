@@ -266,19 +266,19 @@ export default function TeachingStaffPage() {
           <SectionTitle title={showClasses ? '3. Professional Details' : '2. Professional Details'} />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="text-sm font-medium text-text-secondary mb-1 block">Qualification *</label>
+              <label className="text-sm font-medium text-text-secondary mb-1 block">Qualification <span className="text-red-500">*</span></label>
               <input type="text" value={formData.qualification} onChange={e => handleChange('qualification', e.target.value)}
                 className={`input-field ${errors.qualification ? 'border-red-400' : ''}`} placeholder="e.g. M.Sc, B.Ed" />
               {errors.qualification && <p className="text-xs text-red-500 mt-1">{errors.qualification}</p>}
             </div>
             <div>
-              <label className="text-sm font-medium text-text-secondary mb-1 block">Experience (years) *</label>
+              <label className="text-sm font-medium text-text-secondary mb-1 block">Experience (years) <span className="text-red-500">*</span></label>
               <input type="number" value={formData.experience} onChange={e => handleChange('experience', e.target.value)}
                 className={`input-field ${errors.experience ? 'border-red-400' : ''}`} placeholder="e.g. 5" min="0" max="50" />
               {errors.experience && <p className="text-xs text-red-500 mt-1">{errors.experience}</p>}
             </div>
             <div>
-              <label className="text-sm font-medium text-text-secondary mb-1 block">Joining Date *</label>
+              <label className="text-sm font-medium text-text-secondary mb-1 block">Joining Date <span className="text-red-500">*</span></label>
               <input type="date" value={formData.joiningDate} onChange={e => handleChange('joiningDate', e.target.value)}
                 className={`input-field ${errors.joiningDate ? 'border-red-400' : ''}`} />
               {errors.joiningDate && <p className="text-xs text-red-500 mt-1">{errors.joiningDate}</p>}
